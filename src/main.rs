@@ -1,4 +1,8 @@
 pub mod db;
+pub mod items;
+pub mod orders;
+pub mod stations;
+pub mod stationtypes;
 
 use actix_web::{web, App, HttpServer, Responder};
 
@@ -54,7 +58,7 @@ async fn index() -> impl Responder {
 }
 
 async fn get_orders() -> impl Responder {
-    let orders = db::get_orders();
+    let orders = orders::get_orders();
     web::Json(json!({
         "status": "ok",
         "orders": orders,
@@ -62,7 +66,7 @@ async fn get_orders() -> impl Responder {
 }
 
 async fn get_item(item_id: web::Path<i32>) -> impl Responder {
-    let items = db::get_item(item_id.into_inner());
+    let items = items::get_item(item_id.into_inner());
     web::Json(json!({
         "status": "ok",
         "item": {
@@ -74,7 +78,7 @@ async fn get_item(item_id: web::Path<i32>) -> impl Responder {
 }
 
 async fn get_station(station_id: web::Path<i32>) -> impl Responder {
-    let stations = db::get_station(station_id.into_inner());
+    let stations = stations::get_station(station_id.into_inner());
     web::Json(json!({
         "status": "ok",
         "station": {
@@ -85,13 +89,13 @@ async fn get_station(station_id: web::Path<i32>) -> impl Responder {
 }
 
 async fn get_order_display() -> impl Responder {
-    let orders = db::get_orders();
+    let orders = orders::get_orders();
     // make an array of orders with items and other information
     let mut order_display: Vec<serde_json::Value> = Vec::new();
     for order in orders {
         let mut items: Vec<serde_json::Value> = Vec::new();
         for item_id in order.items {
-            let item = db::get_item(item_id);
+            let item = items::get_item(item_id);
             items.push(json!({
                 "id": item[0].id,
                 "name": item[0].name,
@@ -120,6 +124,10 @@ async fn get_order_display() -> impl Responder {
 async fn main() -> std::io::Result<()> {
     // get the args in unix style
     let args: Vec<String> = std::env::args().collect();
+    if args.len() < 2 {
+        println!("[OpenKDS] Missing server type argument");
+        std::process::exit(1);
+    }
     let server_type = args[1].split("=").collect::<Vec<&str>>()[1].to_string();
 
     println!("[OpenKDS] Starting OpenKDS Server");
@@ -135,25 +143,25 @@ async fn main() -> std::io::Result<()> {
             std::process::exit(1);
         }
         let station_id = args[2].split("=").collect::<Vec<&str>>()[1].to_string();
-        let station = db::get_station(station_id.parse::<i32>().unwrap());
+        let station = stations::get_station(station_id.parse::<i32>().unwrap());
         if station.len() == 0 {
             println!("[OpenKDS] Invalid station ID");
             std::process::exit(1);
         }
         println!("[OpenKDS] Starting OpenKDS Station Server");
         println!("[OpenKDS] Station Name: {}", station[0].name);
-        let station_type = db::get_station_type(station[0].station_type);
+        let station_type = stationtypes::get_station_type(station[0].station_type);
         if station_type.len() == 0 {
             println!("[OpenKDS] Invalid station type for station.");
             std::process::exit(1);
         }
         println!("[OpenKDS] Station Type: {}", station_type[0].name);
-        let orders = db::get_orders();
+        let orders = orders::get_orders();
         let mut order_count = 0;
         for order in orders {
             let mut items: Vec<serde_json::Value> = Vec::new();
             for item_id in order.items {
-                let item = db::get_item(item_id);
+                let item = items::get_item(item_id);
                 items.push(json!({
                     "id": item[0].id,
                     "name": item[0].name,
