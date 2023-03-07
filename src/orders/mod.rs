@@ -21,7 +21,7 @@ pub fn get_orders() -> Vec<Order> {
         .for_each(|row| {
             let (id, items, time, source, order_type, stations_completed): (i32, String, i64, String, String, String) = from_row(row.unwrap());
             let items: Vec<i32> = items.split(",").map(|s| s.parse().unwrap_or(0)).collect();
-            let time = Utc.timestamp(time, 0);
+            let time = Utc.timestamp_opt(time, 0).single().unwrap();
             let stations_completed: Vec<i32> = stations_completed.split(",").map(|s| s.parse().unwrap_or(0)).collect();
             let order = Order {
                 id,
@@ -48,7 +48,7 @@ pub fn get_order(order_id: i32) -> Vec<Order> {
     result.for_each(|row| {
         let (id, items, time, source, order_type, stations_completed): (i32, String, i64, String, String, String) = from_row(row.unwrap());
         let items: Vec<i32> = items.split(",").map(|s| s.parse().unwrap_or(0)).collect();
-        let time = Utc.timestamp(time, 0);
+        let time = Utc.timestamp_opt(time, 0).single().unwrap();
         let stations_completed: Vec<i32> = stations_completed.split(",").map(|s| s.parse().unwrap_or(0)).collect();
         let order = Order {
             id,
@@ -94,7 +94,7 @@ pub fn get_station_orders(station_id: i32) -> Vec<OrderOutput> {
     result.for_each(|row| {
         let (id, items, time, source, order_type, stations_completed): (i32, String, i64, String, String, String) = from_row(row.unwrap());
         let items: Vec<i32> = items.split(",").map(|s| s.parse().unwrap_or(0)).collect();
-        let time = Utc.timestamp(time, 0);
+        let time = Utc.timestamp_opt(time, 0).single().unwrap();
         let stations_completed: Vec<i32> = stations_completed.split(",").map(|s| s.parse().unwrap_or(0)).collect();
         if stations_completed.contains(&station_id) {
             return;
