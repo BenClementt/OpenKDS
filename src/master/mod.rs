@@ -1,21 +1,11 @@
-use actix_web::{web, App, HttpServer, Responder};
+use actix_web::{web, Responder};
 
-use serde::{Deserialize, Serialize};
 use serde_json::json;
-use chrono;
 
 /* Impport Modules */
-use crate::db;
 use crate::items;
 use crate::orders;
 use crate::stations;
-use crate::stationtypes;
-use crate::client;
-
-use crate::Order;
-use crate::Item;
-use crate::Station;
-use crate::StationType;
 
 async fn index() -> impl Responder {
     let version = env!("CARGO_PKG_VERSION");
@@ -93,6 +83,10 @@ pub(crate) fn master_router(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("")
             .service(web::resource("/").route(web::get().to(index)))
+            .service(web::resource("/api/orders").route(web::get().to(get_orders)))
+            .service(web::resource("/api/orders/display").route(web::get().to(get_order_display)))
+            .service(web::resource("/api/item/{item_id}").route(web::get().to(get_item)))
+            .service(web::resource("/api/station/{station_id}").route(web::get().to(get_station)))
     );
 }
 

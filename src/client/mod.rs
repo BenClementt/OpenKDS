@@ -1,5 +1,5 @@
 /* Import Crates */
-use actix_web::{web, Responder, HttpResponse, HttpRequest, Error};
+use actix_web::{web, Responder, HttpResponse};
 use serde_json::json;
 
 /* Import Modules */
