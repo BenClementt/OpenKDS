@@ -1,24 +1,15 @@
 /* Import Crates */
-use actix_web::{web, Responder};
-use serde::{Deserialize, Serialize};
+use actix_web::{web, Responder, HttpResponse, HttpRequest, Error};
 use serde_json::json;
-use chrono;
 
 /* Import Modules */
-use crate::db;
-use crate::items;
 use crate::orders;
 use crate::stations;
 use crate::stationtypes;
-use crate::client;
-
-/* Import Structs */
-use crate::Order;
-use crate::Item;
-use crate::Station;
-use crate::StationType;
 
 use crate::STATION_ID;
+
+use handlebars::Handlebars;
 
 async fn get_station_orders() -> impl Responder {
     let orders = orders::get_station_orders(unsafe { STATION_ID });
@@ -26,6 +17,38 @@ async fn get_station_orders() -> impl Responder {
         "status": "ok",
         "orders": orders,
     }))
+}
+
+async fn display_orders() -> impl Responder {
+    let orders = orders::get_station_orders(unsafe { STATION_ID });
+    let station = stations::get_station(unsafe { STATION_ID });
+    let station_type = stationtypes::get_station_type(station[0].station_type);
+    let station_name = station_type[0].name.clone() + "/" + &station[0].name;
+
+    let mut handlebars = Handlebars::new();
+
+    handlebars
+        .register_template_string("index", include_str!("../web/main.hbs"))
+        .unwrap();
+
+    let data = json!({
+        "orders": orders,
+        "station": {
+            "id": unsafe { STATION_ID },
+            "name": station[0].name,
+            "pretty_name": station_name,
+            "type": {
+                "id": station_type[0].id,
+                "name": station_type[0].name,
+            },
+        }
+    });
+
+    let body = handlebars.render("index", &data).unwrap();
+
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(body) 
 }
 
 async fn ping() -> impl Responder {
@@ -65,8 +88,9 @@ pub(crate) fn api_router(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("")
             .service(web::resource("/").route(web::get().to(index)))
-            .service(web::resource("/orders").route(web::get().to(get_station_orders)))
-            .service(web::resource("/ping").route(web::get().to(ping)))
+            .service(web::resource("/web").route(web::get().to(display_orders)))
+            .service(web::resource("/api/orders").route(web::get().to(get_station_orders)))
+            .service(web::resource("/api/ping").route(web::get().to(ping)))
 
     );
 }
