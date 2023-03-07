@@ -3,14 +3,12 @@ name = "open_kds"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
 actix-web = "4.0.0-beta.8"
-actix-cors = "0.5.4"
+actix-cors = "0.6.4"
 actix-rt = "2.2.0"
 
 mysql = "*"
@@ -19,5 +17,6 @@ tokio = { version = "1.0", features = ["full"] }
 dotenv = "0.15.0"
 chrono = { version = "0.4.19", features = ["serde", 'rustc-serialize'] }
 websockets = "0.3.0"
+dojang = "0.1.6"
 
 
