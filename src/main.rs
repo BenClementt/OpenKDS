@@ -75,15 +75,17 @@ async fn main() -> std::io::Result<()> {
 
     if server_type == "master" {
         println!("[OpenKDS] Starting OpenKDS Master Server");
+        
+        /* Start Master Web Server */
         HttpServer::new(|| {
             App::new()
                 .wrap(middleware::Logger::default())
                 .service(web::scope("").configure(master::master_router))
         })
-        .bind(("127.0.0.1", 8080))?
+        .bind(("0.0.0.0", 8080))?
         .run()
         .await
-
+        
     } else if server_type == "client" {
         if args.len() < 3 {
             println!("[OpenKDS] Missing station ID");
@@ -120,9 +122,8 @@ async fn main() -> std::io::Result<()> {
             App::new()
                 .wrap(middleware::Logger::default())
                 .service(web::scope("").configure(client::api_router))
-                
         })
-        .bind(("127.0.0.1", 8080))?
+        .bind(("0.0.0.0", 8080))?
         .run()
         .await
 
