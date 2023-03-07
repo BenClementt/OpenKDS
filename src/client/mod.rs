@@ -27,12 +27,36 @@ async fn display_orders() -> impl Responder {
 
     let mut handlebars = Handlebars::new();
 
+
     handlebars
         .register_template_string("index", include_str!("../web/main.hbs"))
         .unwrap();
 
+    if orders.len() > 4 {
+        let data = json!({
+            "orders": orders,
+            "pending": orders.len() - 4,
+            "station": {
+                "id": unsafe { STATION_ID },
+                "name": station[0].name,
+                "pretty_name": station_name,
+                "type": {
+                    "id": station_type[0].id,
+                    "name": station_type[0].name,
+                },
+            }
+        });
+
+        let body = handlebars.render("index", &data).unwrap();
+
+        return HttpResponse::Ok()
+            .content_type("text/html; charset=utf-8")
+            .body(body) 
+    }
+
     let data = json!({
         "orders": orders,
+        "pending": 0,
         "station": {
             "id": unsafe { STATION_ID },
             "name": station[0].name,
