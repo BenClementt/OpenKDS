@@ -153,10 +153,11 @@
         let orders = document.querySelectorAll('.order');
         orders.forEach(order => {
             let time = order.querySelector('.time').innerHTML;
+            let footer = order.querySelector('.order-footer');
             if(time > hourAvg){
-                order.style.backgroundColor = '#ff0033';
+                footer.style.backgroundColor = '#ff0033';
             } else {
-                order.style.backgroundColor = '#07cc00';
+                footer.style.backgroundColor = '#07cc00';
             }
         })
     }, 1000);
