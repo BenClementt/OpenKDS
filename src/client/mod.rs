@@ -67,6 +67,7 @@ async fn display_orders() -> impl Responder {
                 "id": station_type[0].id,
                 "name": station_type[0].name,
             },
+            "avgtime": avgtime,
         }
     });
 
