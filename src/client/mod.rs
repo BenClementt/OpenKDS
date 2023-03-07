@@ -27,6 +27,7 @@ async fn display_orders() -> impl Responder {
 
     let mut handlebars = Handlebars::new();
 
+    let avgtime = station[0].avgtime;
 
     handlebars
         .register_template_string("index", include_str!("../web/main.hbs"))
@@ -44,6 +45,7 @@ async fn display_orders() -> impl Responder {
                     "id": station_type[0].id,
                     "name": station_type[0].name,
                 },
+                "avgtime": avgtime,
             }
         });
 

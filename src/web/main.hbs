@@ -29,10 +29,35 @@
         }
 
         .order {
-            background-color: #ccc; /* set a background color for the divs */
+            background-color: #d5e8fd;
             border-radius: 10px;
-            padding: 10px;
             color: #000;
+            position: relative;
+        }
+        .order-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            top: 0;
+            left: 0;
+            background-color: #385497;
+            border-bottom: 1px solid #fff;
+            padding: 10px;
+            color: white;
+        }
+        .order-footer{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #385497;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding: 10px;
+            color: white;
         }
         .footer{
             position: fixed;
@@ -50,6 +75,9 @@
             left: 50%;
             transform: translateX(-50%);
 
+        }
+        .time{
+            float: right;
         }
         .pendingInfo{
             position: absolute;
@@ -73,18 +101,23 @@
     <div class="orderContainer">
         {{#each orders}}
             <div class="order" order-id="{{this.id}}">
-                <p>{{this.id}}</p>
+                <div class="order-header">
+                    <p style="float: left">{{this.source}}/{{this.order_type}}</p>
+                    <p style="float: right">{{this.id}}</p>
+                </div>
                 {{#each this.items}}
                     <p>{{this.name}}</p>
                 {{/each}}
-                <p>{{this.time_since_order}}</p>
+                <div class="order-footer">
+                    <p class="time" id="timeCounter">{{this.time_since_order}}</p>
+                </div>
             </div>
         {{/each}}
     </div>
 
     
     <div class='footer'>
-        <p class="stationInfo">{{station.pretty_name}} - <span style="color: green">ON</span> - 132/258</p>
+        <p class="stationInfo">{{station.pretty_name}} - <span style="color: #07cc00">ON</span> - {{station.avgtime}}</p>
         
         {{#if pending}}
             <div class="pendingInfo">
@@ -98,11 +131,34 @@
 
 </body>
 <script>
+    let hourAvg = {{station.avgtime}};
+
     let orderDivs = document.querySelectorAll('.order');
     if(orderDivs.length > 4){
         for(let i = 4; i < orderDivs.length; i++){
             orderDivs[i].style.display = 'none';
         }
     }
+
+    let timeCounters = document.querySelectorAll('.time');
+    timeCounters.forEach((t) => {
+        let time = t.innerHTML;
+        let interval = setInterval(() => {
+            time++;
+            t.innerHTML = time;
+        }, 1000);
+    })
+
+    setInterval(() => {
+        let orders = document.querySelectorAll('.order');
+        orders.forEach(order => {
+            let time = order.querySelector('.time').innerHTML;
+            if(time > hourAvg){
+                order.style.backgroundColor = '#ff0033';
+            } else {
+                order.style.backgroundColor = '#07cc00';
+            }
+        })
+    }, 1000);
 </script>
 </html>

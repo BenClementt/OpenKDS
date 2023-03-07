@@ -86,7 +86,7 @@ pub fn get_station_orders(station_id: i32) -> Vec<OrderOutput> {
     let mut orders: Vec<OrderOutput> = Vec::new();
     let pool = get_pool();
     let mut conn = pool.get_conn().unwrap();
-    let stmt = conn.prep("SELECT * FROM orders;").unwrap();
+    let stmt = conn.prep("SELECT * FROM orders ORDER BY time ASC;").unwrap();
     let result = conn.exec_iter(stmt, ()).unwrap();
 
     let station_type = stations::get_station(station_id)[0].station_type;
