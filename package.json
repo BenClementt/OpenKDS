@@ -1,0 +1,16 @@
+{
+  "name": "openkds",
+  "version": "0.0.4",
+  "description": "Open Source Kitchen Display System for small Resturants and Cafes.",
+  "main": "index.js",
+  "repository": "https://github.com/BenClementt/OpenKDS",
+  "author": "Ben Clement",
+  "license": "GPL-3",
+  "type": "module",
+  "private": false,
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mysql2": "^3.2.0"
+  }
+}
