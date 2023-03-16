@@ -47,10 +47,13 @@ class Station {
             for(let j = 0; j < items.length; j++){
                 if(items[j][0].station_type == this.station_type){
                     items[j] = items[j][0];
+                } else {
+                    items.splice(j, 1);
                 }
             }
             let time = Math.floor((Date.now() - orders[i].time) / 1000);
             orders[i].time = time;
+            console.log(items)
             orders[i].items = items;
         }
 

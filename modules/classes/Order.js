@@ -15,7 +15,7 @@ class Order{
         return this.id;
     }
 
-    async getItemIdInOrder(){
+    async getItemIdsInOrder(){
         let items = this.items.split(",");
         items = items.filter(function (el) {
             return el != null && el != "";
@@ -25,7 +25,7 @@ class Order{
     }
 
     async getItemDataInOrder(){
-        let items = await this.getItemIdInOrder();
+        let items = await this.getItemIdsInOrder();
         let itemData = [];
 
         for(let i = 0; i < items.length; i++){

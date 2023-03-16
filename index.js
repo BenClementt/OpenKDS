@@ -53,8 +53,6 @@ app.listen(port, async () => {
         }
 
         const station = new Station(stationData[0].id, stationData[0].name, stationData[0].avgtime, stationData[0].station_type);
-        const stationTypeData = await station.getStationTypeData();
-        const stationtype = new StationType(stationTypeData.name, stationTypeData.id);
 
         log(`Station ID: ${station_id}`);
         log(`Station Name: ${await station.getName()}`);
