@@ -33,22 +33,40 @@ router.get("/", async (req, res) => {
     })
 });
 
-router.get("/orders", async (req, res) => {
-    const orders = await station.getAllOrders();
-    const pending = await station.getPendingCount();
-    log("Request to /orders. Orders: " + orders.length);
-    res.json({
-        "status": 200,
-        "message": "OK",
-        "data": {
+router.get("/orders/:type", async (req, res) => {
+    if(req.params.type == "json"){
+        const orders = await station.getAllOrders();
+        const pending = await station.getPendingCount();
+        log("Request to /orders. Orders: " + orders.length);
+        res.json({
+            "status": 200,
+            "message": "OK",
+            "data": {
+                "orders": orders,
+                "pending": {
+                    "status": pending > 0 ? "true" : "false",
+                    "count": pending
+                }
+            },
+            "timestamp": Date.now() / 1000,
+        });
+    } else if(req.params.type == "html"){
+        const orders = await station.getAllOrders();
+        const pending = await station.getPendingCount();
+        res.render("partials/orders.ejs", {
             "orders": orders,
-            "pending": {
-                "status": pending > 0 ? "true" : "false",
+            "pending":{
+                "status": pending > 0 ? true : false,
                 "count": pending
+            },
+            "station":{
+                "id": await station.getId(),
+                "name": await station.getName(),
+                "avgtime": await station.getAvgTime(),
+                "type": await station.getStationTypeData()
             }
-        },
-        "timestamp": Date.now() / 1000,
-    });
+        });
+    }
 });
 
 router.get("/web", async (req, res) => {

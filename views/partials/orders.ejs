@@ -1,0 +1,44 @@
+<div class="orderContainer">
+    <%i = 0%>
+    <% orders.forEach((order) => {
+        i++;
+        console.log(i)
+        if(i >= 5){
+            return;
+        }    
+    %>
+        <div class="order" order-id="<%- order.id %>">
+            <div class="order-header">
+                <p style="float: left"><%- order.source %>/<%-order.order_type %></p>
+                <p style="float: right"><%- order.id %></p>
+            </div>
+            <% order.items.forEach((item) => { %>
+                <%- item.name %> <br>
+            <%})%>
+            <% 
+                if(order.time > station.avgtime){
+                    var color = '#ff0033';
+                } else {
+                    var color = '#07cc00';
+                }
+            
+            %>
+            <div class="order-footer" style="background-color: <%- color %> !important;">
+                <p class="time" id="timeCounter"><%- order.time %></p>
+            </div>
+        </div>
+    <% }) %>
+</div>
+
+
+<div class='footer'>
+    <div class="offlineMsg" style="display: none; color: #ff0000">OFFLINE</div>
+
+    <p class="stationInfo"><%- station.name %> - <span style="color: #07cc00">ON</span> - <%- station.avgtime %></p>
+    
+    <% if(pending.status == true){ %>
+        <div class="pendingInfo">
+            <p><%- pending.count %> orders pending &raquo;</p>
+        </div>
+    <% } %>
+</div>
