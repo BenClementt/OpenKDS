@@ -64,7 +64,7 @@ router.get("/web", async (req, res) => {
             "id": await station.getId(),
             "name": await station.getName(),
             "avgtime": await station.getAvgTime(),
-            "type": await station.getStationType()
+            "type": await station.getStationTypeData()
         }
     });
 })

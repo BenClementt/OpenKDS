@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenKDS - <%- station.name  %></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
     <style>
         *{
             margin: 0;
@@ -103,7 +106,7 @@
                 return;
             }    
         %>
-            <div class="order" order-id="{{this.id}}">
+            <div class="order" order-id="<%- order.id %>">
                 <div class="order-header">
                     <p style="float: left"><%- order.source %>/<%-order.order_type %></p>
                     <p style="float: right"><%- order.id %></p>
@@ -120,20 +123,22 @@
 
     
     <div class='footer'>
+        <div class="offlineMsg" style="display: none; color: #ff0000">OFFLINE</div>
+
         <p class="stationInfo"><%- station.name %> - <span style="color: #07cc00">ON</span> - <%- station.avgtime %></p>
         
         <% if(pending.status == true){ %>
             <div class="pendingInfo">
-                <p><%- pending.count %> orders pending >></p>
+                <p><%- pending.count %> orders pending &raquo;</p>
             </div>
         <% } %>
     </div>
 
-
 </body>
 
 <script>
-    let hourAvg = 10;
+    let hourAvg = <%- station.avgtime %>;
+    let stationType = <%- station.type.id %>;
 
     let orderDivs = document.querySelectorAll('.order');
     if(orderDivs.length > 4){
@@ -162,6 +167,73 @@
                 footer.style.backgroundColor = '#07cc00';
             }
         })
+    }, 1000);
+
+
+    function updateOrders(){
+        $.ajax({
+            url: '/orders',
+            type: 'GET',
+            success: (data) => {
+                data = data.data;
+                $(".offlineMsg").hide();
+                const orders = data.orders;
+                const pending = data.pending;
+                const station = data.station;
+                let orderDivs = document.querySelectorAll('.order');
+                let orderDivsIds = [];
+                orderDivs.forEach((order) => {
+                    orderDivsIds.push(order.getAttribute('order-id'));
+                })
+
+                let newOrders = [];
+                orders.forEach((order) => {
+                    if(!orderDivsIds.includes(order.id)){
+                        newOrders.push(order);
+                    }
+                })
+
+                if(newOrders.length > 0 && orderDivs.length < 4){
+                    let orderContainer = document.querySelector('.orderContainer');
+                    newOrders.forEach((order) => {
+                        let orderDiv = document.createElement('div');
+                        orderDiv.classList.add('order');
+                        orderDiv.setAttribute('order-id', order.id);
+                        orderDiv.innerHTML = `
+                            <div class="order-header">
+                                <p style="float: left">${order.source}/${order.order_type}</p>
+                                <p style="float: right">${order.id}</p>
+                            </div>
+                        `;
+                        order.items.forEach((item) => {
+                            orderDiv.innerHTML += `${item.name} <br>`;
+                        })
+                        orderDiv.innerHTML += `
+                            <div class="order-footer">
+                                <p class="time" id="timeCounter">${order.time}</p>
+                            </div>
+                        `;
+                        orderContainer.appendChild(orderDiv);
+                    })
+                }
+
+
+
+
+                if(pending.status == true){
+                    document.querySelector('.pendingInfo').innerHTML = `<p>${pending.count} orders pending &raquo;</p>`;
+                } else {
+                    document.querySelector('.pendingInfo').innerHTML = '';
+                }
+            },
+            error: (err) => {
+                $(".offlineMsg").show();
+            }
+        })
+    }
+
+    setInterval(() => {
+        updateOrders();
     }, 1000);
 </script>
 </html>
