@@ -1,6 +1,3 @@
-# Added by cargo
-
-/target
+node_modules/
+yarn.lock
 .env
-.devcontainer
-Cargo.lock

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenKDS - {{station.pretty_name}}</title>
+    <title>OpenKDS - <%- station.name  %></title>
     <style>
         *{
             margin: 0;
@@ -91,47 +91,49 @@
 
 </head>
 <body>
-
-    This is {{ station.pretty_name }}!
-
     <div class='main'>
         
     </div>
 
     <div class="orderContainer">
-        {{#each orders}}
+        <%i = 0%>
+        <% orders.forEach((order) => {
+            i++;
+            if(i == 4){
+                return;
+            }    
+        %>
             <div class="order" order-id="{{this.id}}">
                 <div class="order-header">
-                    <p style="float: left">{{this.source}}/{{this.order_type}}</p>
-                    <p style="float: right">{{this.id}}</p>
+                    <p style="float: left"><%- order.source %>/<%-order.order_type %></p>
+                    <p style="float: right"><%- order.id %></p>
                 </div>
-                {{#each this.items}}
-                    <p>{{this.name}}</p>
-                {{/each}}
+                <% order.items.forEach((item) => { %>
+                    <%- item.name %> <br>
+                <%})%>
                 <div class="order-footer">
-                    <p class="time" id="timeCounter">{{this.time_since_order}}</p>
+                    <p class="time" id="timeCounter"><%- order.time %></p>
                 </div>
             </div>
-        {{/each}}
+        <% }) %>
     </div>
 
     
     <div class='footer'>
-        <p class="stationInfo">{{station.pretty_name}} - <span style="color: #07cc00">ON</span> - {{station.avgtime}}</p>
+        <p class="stationInfo"><%- station.name %> - <span style="color: #07cc00">ON</span> - <%- station.avgtime %></p>
         
-        {{#if pending}}
+        <% if(pending.status == true){ %>
             <div class="pendingInfo">
-                <p>{{pending}} orders pending >></p>
+                <p><%- pending.count %> orders pending >></p>
             </div>
-        {{/if}}
+        <% } %>
     </div>
 
 
-
-
 </body>
+
 <script>
-    let hourAvg = {{station.avgtime}};
+    let hourAvg = 10;
 
     let orderDivs = document.querySelectorAll('.order');
     if(orderDivs.length > 4){
