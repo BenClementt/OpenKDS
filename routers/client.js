@@ -73,11 +73,6 @@ router.get("/web", async (req, res) => {
     const orders = await station.getAllOrders();
     const pending = await station.getPendingCount();
     res.render("client/index.ejs", {
-        "orders": orders,
-        "pending":{
-            "status": pending > 0 ? true : false,
-            "count": pending
-        },
         "station":{
             "id": await station.getId(),
             "name": await station.getName(),
