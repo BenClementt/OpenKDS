@@ -43,18 +43,19 @@ class Station {
         for(let i = 0; i < orders.length; i++){
             orders[i] = new Order(orders[i].id, orders[i].items, orders[i].time, orders[i].source, orders[i].order_type, orders[i].stations_completed);
             let items = await orders[i].getItemDataInOrder();
+            let itemsOut = [];
+
 
             for(let j = 0; j < items.length; j++){
-                if(items[j][0].station_type == this.station_type){
-                    items[j] = items[j][0];
-                } else {
-                    items.splice(j, 1);
+                items[j] = items[j][0];
+                if(items[j].station_type == this.station_type){
+                    itemsOut.push(items[j]);
                 }
+
             }
             let time = Math.floor((Date.now() - orders[i].time) / 1000);
             orders[i].time = time;
-            console.log(items)
-            orders[i].items = items;
+            orders[i].items = itemsOut;
         }
 
         return orders;
