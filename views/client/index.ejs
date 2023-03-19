@@ -16,7 +16,7 @@
         }
         body {
             background-color: #000;
-            color: #000;
+            color: #fff;
             font-size: 2em;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
@@ -94,11 +94,25 @@
         .order [i="1"]{
             border: 1px solid #fff;
         }
+
+        .loading__content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
     </style>
 
 </head>
 <body>
 
+
+    <div class="loading__content">
+        <h1 class="loading__title">OpenKDS</h1>
+        <p class="loading__text">Loading Data...</p>
+    </div>
+    
 
 </body>
 
