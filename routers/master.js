@@ -1,12 +1,71 @@
 import express from "express";
 import dotenv from "dotenv";
+import session from "express-session";
+import expressMySqlSession from "express-mysql-session";
+import crypto from "crypto";
 dotenv.config();
+
+/* Import Modules */
+import log from "../modules/utils/log.js";
+import db from "../modules/utils/db.js";
 
 /* Import Classes */
 import Station from "../modules/classes/Station.js";
 import StationType from "../modules/classes/StationType.js";
 
 const router = express.Router();
+
+const sessionStore = new (expressMySqlSession(session))({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+
+
+
+
+
+const secret = crypto.randomBytes(64).toString("hex");
+
+
+router.use(session({
+    key: "openkds",
+    secret: secret,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+        httpOnly: false,
+        secure: false
+    }
+}));
+
+
+async function checkAuth(req, res, next){
+    if(req.session.authenticated){
+        next();
+    } else {
+        const [data] = await db.query("SELECT * FROM users");
+        if(data.length > 0){
+            res.redirect("/web/login");
+        }
+        else {
+            res.redirect("/web/setup");
+        }
+    }
+}
+        
+
+
+
+    
+
 
 router.get("/", async (req, res) => {
     res.json({
@@ -19,6 +78,108 @@ router.get("/", async (req, res) => {
         "timestamp": Date.now(),
     })
 })
+
+router.get("/web", async (req, res) => {
+    res.redirect("/web/dashboard");
+})
+
+router.get("/web/dashboard", checkAuth, async (req, res) => {
+    const [stations] = await db.query("SELECT * FROM stations");
+    const [stationTypes] = await db.query("SELECT * FROM station_types");
+    const [items] = await db.query("SELECT * FROM items");
+    const [orders] = await db.query("SELECT * FROM orders");
+    const [users] = await db.query("SELECT * FROM users");
+
+    res.render("master/dashboard.ejs", {
+        "stations": stations,
+        "stationTypes": stationTypes,
+        "items": items,
+        "orders": orders,
+        "users": users
+    })
+})
+
+router.get("/web/login", async (req, res) => {
+    res.render("master/login.ejs")
+})
+
+router.post("/web/login", async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const [data] = await db.query("SELECT * FROM users WHERE username = ?", [username]);
+
+    if(data.length > 0){
+        if(data[0].password == password){
+            req.session.authenticated = true;
+            req.session.username = username;
+            res.json({
+                "status": 200,
+                "message": "OK",
+                "data": null,
+                "error": null,
+                "timestamp": Date.now()
+            })
+        } else {
+            res.json({
+                "status": 400,
+                "message": "Bad Request",
+                "data": null,
+                "error": "Invalid password",
+                "timestamp": Date.now()
+            })
+        }
+    } else {
+        res.json({
+            "status": 400,
+            "message": "Bad Request",
+            "data": null,
+            "error": "Invalid username",
+            "timestamp": Date.now()
+        })
+    }
+});
+
+router.get("/web/logout", async (req, res) => {
+    req.session.destroy();
+    res.redirect("/web/login");
+})
+
+router.get("/web/setup", async (req, res) => {
+    res.render("master/setup.ejs")
+})
+
+router.post("/web/setup", async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const [data] = await db.query("SELECT * FROM users");
+
+    if(data.length > 0){
+        res.json({
+            "status": 400,
+            "message": "Bad Request",
+            "data": null,
+            "error": "User already exists",
+            "timestamp": Date.now()
+        })
+    } else {
+        await db.query("INSERT INTO users (username, password) VALUES (?, ?)", [username, password]);
+        res.json({
+            "status": 200,
+            "message": "OK",
+            "data": null,
+            "error": null,
+            "timestamp": Date.now()
+        })
+    }
+});
+
+
+
+
+
+
 
 export default router;
 
