@@ -14,6 +14,10 @@ const station_id = process.argv.slice(2)[1] || -1;
 
 /* Initialise Express */
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+
 import masterRouter from "./routers/master.js";
 
 
