@@ -11,7 +11,7 @@ Open source Kitchen Display System to work with POS systems in restaurants.
 
 Runs using NodeJS and provides API & Web UI control and output.
 
-# Images
+# Images (WIP/Beta)
 ### Dashboard
 ![Dashboard](https://ben.xonos.uk/KexZgf5.png)
 
