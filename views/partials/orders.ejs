@@ -11,9 +11,11 @@
                 <p style="float: left"><%- order.source %>/<%-order.order_type %></p>
                 <p style="float: right"><%- order.id %></p>
             </div>
-            <% order.items.forEach((item) => { %>
-                <%- item.name %> <br>
-            <%})%>
+            <div class="items">
+                <% order.items.forEach((item) => { %>
+                    <p class="item"><%- item.quantity %> x <%- item.name %></p><br>
+                <%})%>
+            </div>
             <% 
                 if(order.time > station.avgtime){
                     var color = '#ff0033';

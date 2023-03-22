@@ -53,6 +53,26 @@ class Station {
                 }
 
             }
+
+            // foeach item in itemsOut, combine the same items into one item with a quantity
+            let itemsOut2 = [];
+            for(let j = 0; j < itemsOut.length; j++){
+                let found = false;
+                for(let k = 0; k < itemsOut2.length; k++){
+                    if(itemsOut[j].id == itemsOut2[k].id){
+                        itemsOut2[k].quantity++;
+                        found = true;
+                    }
+                }
+                if(!found){
+                    itemsOut[j].quantity = 1;
+                    itemsOut2.push(itemsOut[j]);
+                }
+            }
+
+            itemsOut = itemsOut2;
+
+
             let time = Math.floor((Date.now() - orders[i].time) / 1000);
             orders[i].time = time;
             orders[i].items = itemsOut;
