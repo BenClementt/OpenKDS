@@ -184,6 +184,23 @@ router.get("/web/items", checkAuth, async (req, res) => {
     });
 });
 
+router.get("/web/items/:id/edit", checkAuth, async (req, res) => {
+    const id = req.params.id;
+    const [data] = await db.query("SELECT * FROM items WHERE id = ?", [id]);
+
+    if(data.length > 0){
+        const [stationTypes] = await db.query("SELECT * FROM station_types");
+        const stationType = stationTypes.find((stationType) => stationType.id == data[0].station_type);
+        res.render("master/edit/item.ejs", {
+            "item": data[0],
+            "stationtype": stationType,
+            "stationtypes": stationTypes
+        })
+    } else {
+        res.redirect("/web/items");
+    }
+})
+
 
 
 
