@@ -135,6 +135,19 @@ router.get("/web/stations/:id/edit", checkAuth, async (req, res) => {
         res.redirect("/web/stations");
     }
 })
+router.get("/web/stationtypes", checkAuth, async (req, res) => {
+    const [data] = await db.query("SELECT * FROM station_types");
+    for (let i = 0; i < data.length; i++) {
+        const [stations] = await db.query("SELECT * FROM stations WHERE station_type = ?", [data[i].id]);
+        const [items] = await db.query("SELECT * FROM items WHERE station_type = ?", [data[i].id]);
+        data[i].stations = stations;
+        data[i].items = items;
+    }
+
+    res.render("master/stationtypes.ejs", {
+        "stationtypes": data
+    })
+})
 router.get("/web/login", async (req, res) => {
     if(req.session.authenticated){
         res.redirect("/web/dashboard");

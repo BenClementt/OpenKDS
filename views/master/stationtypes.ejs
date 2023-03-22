@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenKDS &raquo; Station Types</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    
+    <style>
+        
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        
+        
+        
+    </style>
+    
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">OpenKDS</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/web/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/web/stations">Stations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/web/stationtypes">Station Types</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/web/orders">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/web/items">Menu Items</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Station Types</h1>
+                <p></p>
+                <p>Station Types are used to categorize stations. For example, you can have a category called "Kitchen Stations" and add all your kitchen stations to that category. You can then use the category to filter your stations in the "Stations" page.</p>
+                <p>Example: Kitchen Stations -> Burgers, Drinks Stations -> Soft Drinks, Front counter screens -> all items</p>
+                <p></p>
+                <p>Items will automatically be sent to one of the available "online" stations with the station type.</p>
+                <p>For example, if you had 2 kitchen production lines, orders will be sent to either line depending on the "weight" of the individual station.</p>
+            </div>
+        </div>
+    </div>
+    
+    <hr />
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>Station Types</h2>
+                <p></p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Stations</th>
+                            <th scope="col">Items</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (var i = 0; i < stationtypes.length; i++) { %>
+                            <tr>
+                                <td><%= stationtypes[i].id %></td>
+                                <td><%= stationtypes[i].name %></td>
+                                <td><%= stationtypes[i].stations.length %></td>
+                                <td><%= stationtypes[i].items.length %></td>
+                                <td>
+                                    <a href="/web/stationtypes/<%= stationtypes[i].id %>/edit" class="btn btn-primary">Edit</a>
+                                    <a href="/web/stationtypes/<%= stationtypes[i].id %>/delete" class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+    
+</body>
+</html>
