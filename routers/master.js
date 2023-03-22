@@ -12,6 +12,8 @@ import db from "../modules/utils/db.js";
 /* Import Classes */
 import Station from "../modules/classes/Station.js";
 import StationType from "../modules/classes/StationType.js";
+import Item from "../modules/classes/Item.js";
+import Order from "../modules/classes/Order.js";
 
 const router = express.Router();
 
@@ -200,6 +202,28 @@ router.get("/web/items/:id/edit", checkAuth, async (req, res) => {
         res.redirect("/web/items");
     }
 })
+
+router.get("/web/orders", checkAuth, async (req, res) => {
+    const [orders] = await db.query("SELECT * FROM orders");
+    const [items] = await db.query("SELECT * FROM items");
+
+    for (let i = 0; i < orders.length; i++) {
+        const orderItems = orders[i].items.split(",");
+        orders[i].items = [];
+
+        for (let j = 0; j < orderItems.length; j++) {
+            const [item] = items.filter((item) => item.id == orderItems[j]);
+            orders[i].items.push(item);
+        }        
+    }
+
+    res.render("master/view/orders.ejs", {
+        "orders": orders
+    });
+});
+
+
+
 
 
 
