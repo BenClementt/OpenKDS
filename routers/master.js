@@ -117,7 +117,11 @@ router.get("/web/stations", checkAuth, async (req, res) => {
     })
 })
 router.get("/web/login", async (req, res) => {
-    res.render("master/login.ejs")
+    if(req.session.authenticated){
+        res.redirect("/web/dashboard");
+    } else {
+        res.render("master/login.ejs")
+    }
 })
 
 router.post("/web/login", async (req, res) => {
