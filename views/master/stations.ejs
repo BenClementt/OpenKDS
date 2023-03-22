@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenKDS &raquo; Stations</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    
+    <style>
+        
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        
+        
+        
+    </style>
+    
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">OpenKDS</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/web/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/web/stations">Stations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/web/stationtypes">Station Types</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/web/orders">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/web/items">Menu Items</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Stations</h1>
+                <p>Manage your stations here. Stations are specific parts of the resturant that have screens. Stations can have items assigned to them via their parent type.</p>
+                <p>Examples: Burgers -> Kitchen Stations, Drinks -> Bev Cell Stations</p>
+            </div>
+        </div>
+    </div>
+    
+    <hr />
+    
+    <div class="container">
+        <table class="table">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Average Time</th>
+                <th>Station Type</th>
+                <th>Actions</th>
+            </tr>
+            <% stations.forEach(element => { %>
+                <tr>
+                    <td><%= element.id %></td>
+                    <td><%= element.name %></td>
+                    <td><%= element.avgtime %></td>
+                    <td><%= element.station_type %></td>
+                    <td><a href="/web/stations/<%= element.id %>/edit">Edit</a></td>
+                </tr>
+            <% }); %>
+        </table>
+        
+    </div>
+    
+    
+</body>
+</html>

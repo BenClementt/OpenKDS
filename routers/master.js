@@ -99,6 +99,23 @@ router.get("/web/dashboard", checkAuth, async (req, res) => {
     })
 })
 
+router.get("/web/stations", checkAuth, async (req, res) => {
+    const [data] = await db.query("SELECT * FROM stations");
+    
+    for (let i = 0; i < data.length; i++) {
+        data[i].avgtime = `${data[i].avgtime} seconds`
+        let [stationType] = await db.query("SELECT * FROM station_types WHERE id = ?", [data[i].station_type]);
+        if(stationType.length > 0){
+            data[i].station_type = stationType[0].name;
+        } else {
+            data[i].station_type = "Unknown (ID: " + data[i].station_type + ")";
+        }
+    }
+
+    res.render("master/stations.ejs", {
+        "stations": data
+    })
+})
 router.get("/web/login", async (req, res) => {
     res.render("master/login.ejs")
 })
