@@ -49,7 +49,6 @@
     </nav>
     
     <div class="container">
-        <!-- Back to stations list button -->
         <div class="row">
             <div class="col-12">
                 <a href="/web/stations" class="btn btn-primary">Back to Stations</a>
@@ -81,6 +80,10 @@
                     <option value="<%= stationtype.id %>" <% if (stationtype.id == station.stationTypeId) { %> selected <% } %>><%= stationtype.name %></option>
                 <% }); %>
             </select>
+        </div>
+
+        <div class="save">
+            <button class="btn btn-primary">Save Changes</button>
         </div>
 
 

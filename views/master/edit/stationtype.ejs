@@ -49,7 +49,6 @@
     </nav>
     
     <div class="container">
-        <!-- Back to stations list button -->
         <div class="row">
             <div class="col-12">
                 <a href="/web/stationtypes" class="btn btn-primary">Back to Station Types</a>
@@ -71,8 +70,12 @@
         </h2>
         <p>Manage the station type details.</p>
         <div class="name">
-            <label for="stationName">Station Type Name</label>
-            <input type="text" name="name" id="stationName" placeholder="Station Name" value="<%= stationtype.name %>">
+            <label for="stationTypeName">Station Type Name</label>
+            <input type="text" name="name" id="stationTypeName" placeholder="Station Type Name" value="<%= stationtype.name %>">
+        </div>
+
+        <div class="save">
+            <button class="btn btn-primary">Save Changes</button>
         </div>
 
         <h2>Stations</h2>
