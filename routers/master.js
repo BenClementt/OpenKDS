@@ -115,7 +115,7 @@ router.get("/web/stations", checkAuth, async (req, res) => {
         }
     }
 
-    res.render("master/stations.ejs", {
+    res.render("master/view/stations.ejs", {
         "stations": data
     })
 })
@@ -149,7 +149,7 @@ router.get("/web/stationtypes", checkAuth, async (req, res) => {
         data[i].items = items;
     }
 
-    res.render("master/stationtypes.ejs", {
+    res.render("master/view/stationtypes.ejs", {
         "stationtypes": data
     })
 })
@@ -179,7 +179,7 @@ router.get("/web/items", checkAuth, async (req, res) => {
         data[i].stationType = stationType[0];
     }
 
-    res.render("master/items.ejs", {
+    res.render("master/view/items.ejs", {
         "items": data
     });
 });
