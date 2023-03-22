@@ -148,6 +148,25 @@ router.get("/web/stationtypes", checkAuth, async (req, res) => {
         "stationtypes": data
     })
 })
+
+router.get("/web/stationtypes/:id/edit", checkAuth, async (req, res) => {
+    const id = req.params.id;
+    const [data] = await db.query("SELECT * FROM station_types WHERE id = ?", [id]);
+
+    if(data.length > 0){
+        const [stations] = await db.query("SELECT * FROM stations WHERE station_type = ?", [data[0].id]);
+        const [items] = await db.query("SELECT * FROM items WHERE station_type = ?", [data[0].id]);
+        data[0].stations = stations;
+        data[0].items = items;
+
+        res.render("master/edit/stationtype.ejs", {
+            "stationtype": data[0]
+        })
+    } else {
+        res.redirect("/web/stationtypes");
+    }
+})
+
 router.get("/web/login", async (req, res) => {
     if(req.session.authenticated){
         res.redirect("/web/dashboard");
