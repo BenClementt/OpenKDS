@@ -82,6 +82,30 @@ router.get("/web", async (req, res) => {
     });
 })
 
+router.get("/api/serve/:id", async (req, res) => {
+    const [orderData] = await db.query("SELECT * FROM orders WHERE id = ?", [req.params.id]);
+    if(orderData.length == 0) {
+        res.json({
+            "status": 404,
+            "message": "Order not found.",
+            "data": {},
+            "timestamp": Date.now() / 1000,
+        });
+    } else {
+        const order = new Order(orderData[0].id);
+        const response = await order.serve(station_id);
+
+        res.json({
+            "status": 200,
+            "message": "OK",
+            "data": {
+                "response": response    
+            },
+            "timestamp": Date.now() / 1000,
+        });
+    }
+})
+
 
 
 

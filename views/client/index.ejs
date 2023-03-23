@@ -163,6 +163,26 @@
             }
         })
     }, 1000);
+    // onclick event for order, to serve off the screen, orders are dynamically loaded so we need to use event delegation
+
+    $("body").on("click", ".order", (e) => {
+        let id = e.currentTarget.getAttribute('order-id');
+        $.ajax({
+            url: '/api/serve/' + id,
+            type: 'GET',
+            success: (data) => {
+                console.log("OpenKDS: Served order " + id)
+                setTimeout(() => {
+                    updateOrders();
+                }, 500);
+            },
+            error: (err) => {
+                console.log("OpenKDS: Error serving order " + id)
+                console.log("OpenKDS: " + err)
+                $(".offlineMsg").show();
+            }
+        })
+    })
 
 
     function updateOrders(){

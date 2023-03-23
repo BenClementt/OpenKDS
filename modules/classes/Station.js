@@ -41,7 +41,7 @@ class Station {
         const [orders] = await db.query("SELECT * FROM orders WHERE stations_completed != ?", [this.station_type]);
 
         for(let i = 0; i < orders.length; i++){
-            orders[i] = new Order(orders[i].id, orders[i].items, orders[i].time, orders[i].source, orders[i].order_type, orders[i].stations_completed);
+            orders[i] = new Order(orders[i].id);
             let items = await orders[i].getItemDataInOrder();
             let itemsOut = [];
 
@@ -72,10 +72,14 @@ class Station {
 
             itemsOut = itemsOut2;
 
-
-            let time = Math.floor((Date.now() - orders[i].time) / 1000);
+            let unix = await orders[i].getUnixTime();
+            let time = Math.floor((Date.now() - unix) / 1000);
             orders[i].time = time;
             orders[i].items = itemsOut;
+            orders[i].stations_completed = await orders[i].getCompletedStations();
+            orders[i].source = await orders[i].getSource();
+            orders[i].order_type = await orders[i].getOrderType();
+
         }
 
         return orders;
