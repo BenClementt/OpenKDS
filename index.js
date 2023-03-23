@@ -9,8 +9,8 @@ import StationType from "./modules/classes/StationType.js";
 
 /* Initialise Variables */
 const port = process.env.PORT || 3000;
-const server_type = process.argv.slice(2)[0] || "master";
-const station_id = process.argv.slice(2)[1] || -1;
+const server_type = process.env.SERVER_TYPE || "master";
+const station_id = process.env.STATION_ID || -1;
 
 /* Initialise Express */
 const app = express();

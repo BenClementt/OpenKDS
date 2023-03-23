@@ -33,12 +33,9 @@ const sessionStore = new (expressMySqlSession(session))({
 
 
 
-const secret = crypto.randomBytes(64).toString("hex");
-
-
 router.use(session({
     key: "openkds",
-    secret: secret,
+    secret: process.env.AUTH_SECRET || crypto.randomBytes(64).toString("hex"),
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
