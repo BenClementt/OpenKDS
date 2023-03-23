@@ -18,7 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-import masterRouter from "./routers/master.js";
+/* Import Routers */
+const masterRouter = await import("./routers/master.js").then((module) => module.router);
 
 
 

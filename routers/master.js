@@ -16,6 +16,7 @@ import Item from "../modules/classes/Item.js";
 import Order from "../modules/classes/Order.js";
 
 const router = express.Router();
+import { router as masterApiRouter } from "./master_api.js";
 
 const sessionStore = new (expressMySqlSession(session))({
     host: process.env.DB_HOST,
@@ -48,6 +49,8 @@ router.use(session({
     }
 }));
 
+router.use("/api", masterApiRouter);
+
 
 async function checkAuth(req, res, next){
     next();
@@ -67,21 +70,8 @@ async function checkAuth(req, res, next){
 }
         
 
-
-
-    
-
-
 router.get("/", async (req, res) => {
-    res.json({
-        "status": 200,
-        "message": "OK",
-        "data": {
-            "server_type": "master"
-        },
-        "error": null,
-        "timestamp": Date.now(),
-    })
+    res.redirect("/web");
 })
 
 router.get("/web", async (req, res) => {
@@ -314,6 +304,9 @@ router.post("/web/setup", async (req, res) => {
 
 
 
-export default router;
+export {
+    checkAuth,
+    router
+};
 
 
